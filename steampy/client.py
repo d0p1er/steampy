@@ -29,13 +29,17 @@ def login_required(func):
 
 
 class SteamClient:
-    def __init__(self, api_key: str, username: str = None, password: str = None, steam_guard:str = None) -> None:
+    def __init__(self, api_key: str, username: str = None, password: str = None, steam_guard:str = None, session:requests.Session = None) -> None:
         self._api_key = api_key
         self._session = requests.Session()
         self.steam_guard = steam_guard
         self.was_login_executed = False
         self.username = username
         self._password = password
+        if None not in locals().values():
+            self._session = session
+            self.steam_guard = guard.load_steam_guard(steam_guard)
+            self.was_login_executed = True
         self.market = SteamMarket(self._session)
         self.chat = SteamChat(self._session)
 
